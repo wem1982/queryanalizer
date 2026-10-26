@@ -1,6 +1,6 @@
 # QueryAnalyzer
 
-**Live demo:** [https://wem1982.github.io/queryanalizer/](https://wem1982.github.io/queryanalizer/)
+**Live demo:** [https://wem1982.github.io/queryanalizer/](https://wem1982.github.io/queryanalizer/) — ative o Pages uma vez conforme [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md).
 
 QueryAnalyzer is a **zero-install**, browser-only tool that turns a SQL query into an **interactive relationship graph**. Paste one query, explore tables and joins visually, and switch the interface between **English** and **Portuguese**.
 

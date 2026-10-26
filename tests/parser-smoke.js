@@ -51,4 +51,17 @@ assert("cte node", function () {
   if (!r.nodes.some(function (n) { return n.id === "x"; })) throw new Error("missing CTE node x");
 });
 
+assert("joins inside cte body", function () {
+  var r = extract(
+    "WITH base AS (\n" +
+      "SELECT * FROM orders o\n" +
+      "INNER JOIN customers c ON c.id = o.customer_id\n" +
+      ")\n" +
+      "SELECT * FROM base",
+    { subquery: "Sub", cte: "CTE" }
+  );
+  if (r.edges.length < 1) throw new Error("expected join inside CTE");
+  if (!r.nodes.some(function (n) { return n.id === "o"; })) throw new Error("expected alias o");
+});
+
 console.log("Done.");

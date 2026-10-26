@@ -67,6 +67,29 @@
     return -1;
   }
 
+  function extractWhereAfterFrom(sql, fromClauseEndIndex) {
+    var slice = sql.slice(fromClauseEndIndex);
+    var idx = slice.search(/\bWHERE\b/i);
+    if (idx === -1) return "";
+
+    var start = idx + 6;
+    var end = slice.length;
+    var markers = [
+      /\bGROUP BY\b/i,
+      /\bHAVING\b/i,
+      /\bORDER BY\b/i,
+      /\bLIMIT\b/i,
+      /\bUNION\b/i,
+      /\bINTERSECT\b/i,
+      /\bEXCEPT\b/i,
+    ];
+    markers.forEach(function (re) {
+      var m = slice.slice(start).search(re);
+      if (m !== -1 && start + m < end) end = start + m;
+    });
+    return slice.slice(start, end).trim();
+  }
+
   /**
    * @param {string} fragment
    * @returns {{ expression: string, alias: string|null, kind: string }}
@@ -196,7 +219,7 @@
 
   function extractCtes(sql) {
     var ctes = {};
-    var m = sql.match(/^\s*WITH\s+/i);
+    var m = sql.match(/^\s*WITH\s+(?:RECURSIVE\s+)?/i);
     if (!m) return { sql: sql, ctes: ctes };
 
     var i = m[0].length;
@@ -227,7 +250,9 @@
     var idx = upper.search(/\bFROM\b/);
     if (idx === -1) return null;
 
-    var start = idx + 5;
+    var start = idx + 4;
+    while (start < sql.length && /\s/.test(sql[start])) start++;
+
     var endMarkers = [
       /\bWHERE\b/i,
       /\bGROUP BY\b/i,
@@ -248,23 +273,9 @@
 
     return {
       from: sql.slice(start, end).trim(),
-      where: extractWhere(sql),
+      where: extractWhereAfterFrom(sql, end),
+      fromEnd: end,
     };
-  }
-
-  function extractWhere(sql) {
-    var upper = sql.toUpperCase();
-    var idx = upper.search(/\bWHERE\b/);
-    if (idx === -1) return "";
-
-    var start = idx + 6;
-    var end = sql.length;
-    var markers = [/\bGROUP BY\b/i, /\bHAVING\b/i, /\bORDER BY\b/i, /\bLIMIT\b/i, /\bUNION\b/i];
-    markers.forEach(function (re) {
-      var m = sql.slice(start).search(re);
-      if (m !== -1 && start + m < end) end = start + m;
-    });
-    return sql.slice(start, end).trim();
   }
 
   function splitFromItems(fromClause) {
@@ -308,60 +319,13 @@
     });
   }
 
-  /**
-   * @param {string} rawSql
-   * @param {{ subquery: string, cte: string }} labels
-   * @returns {{ nodes: Array, edges: Array, meta: Object }}
-   */
-  function extractRelationships(rawSql, labels) {
-    labels = labels || { subquery: "Subquery", cte: "CTE" };
-    var sql = normalizer.normalizeSql(rawSql);
-    var nodes = {};
-    var edges = [];
-    var edgeKeys = {};
+  function analyzeFromBlock(fragment, nodes, labels, addEdge) {
+    if (!fragment || !fragment.trim()) return false;
 
-    function addEdge(sourceId, targetId, joinType, conditions, extra) {
-      if (!sourceId || !targetId || sourceId === targetId) return;
-      var key =
-        [sourceId, targetId].sort().join("|") +
-        "|" +
-        joinType +
-        "|" +
-        JSON.stringify(conditions || []);
-      if (edgeKeys[key]) return;
-      edgeKeys[key] = true;
-      edges.push({
-        id: "e" + edges.length,
-        source: sourceId,
-        target: targetId,
-        joinType: joinType,
-        conditions: conditions || [],
-        detail: extra || "",
-      });
-    }
-
-    var cteResult = extractCtes(sql);
-    Object.keys(cteResult.ctes).forEach(function (name) {
-      nodes[name] = {
-        id: name,
-        label: name,
-        kind: "cte",
-        expression: cteResult.ctes[name],
-      };
-    });
-
-    sql = cteResult.sql;
-    var fromInfo = findFromClause(sql);
-    if (!fromInfo || !fromInfo.from) {
-      return {
-        nodes: Object.values(nodes),
-        edges: edges,
-        meta: { hadFrom: false },
-      };
-    }
+    var fromInfo = findFromClause(fragment);
+    if (!fromInfo || !fromInfo.from) return false;
 
     var fromClause = fromInfo.from;
-    var joins = [];
     var cursor = 0;
     var firstPartEnd = fromClause.length;
     var firstJoin = findNextJoin(fromClause, 0);
@@ -431,29 +395,16 @@
     }
 
     var commaItems = splitFromItems(baseFragment);
-    if (commaItems.length > 1 && !firstJoin) {
-      var ids = commaItems
-        .map(function (item) {
-          var src = parseTableSource(item);
-          return src ? registerNode(nodes, src, labels) : null;
-        })
-        .filter(Boolean);
-
-      if (fromInfo.where) {
-        splitOnAnd(fromInfo.where).forEach(function (pred) {
-          var pair = parseColumnPair(pred);
-          if (!pair) return;
-          var leftTable = tableFromColumnRef(pair.left, nodes);
-          var rightTable = tableFromColumnRef(pair.right, nodes);
-          if (leftTable && rightTable && leftTable !== rightTable) {
-            addEdge(leftTable, rightTable, "IMPLICIT", [pair]);
-          }
-        });
-      }
-
-      if (ids.length > 1 && edges.length === 0 && fromInfo.where) {
-        /* edges added above */
-      }
+    if (commaItems.length > 1 && !firstJoin && fromInfo.where) {
+      splitOnAnd(fromInfo.where).forEach(function (pred) {
+        var pair = parseColumnPair(pred);
+        if (!pair) return;
+        var leftTable = tableFromColumnRef(pair.left, nodes);
+        var rightTable = tableFromColumnRef(pair.right, nodes);
+        if (leftTable && rightTable && leftTable !== rightTable) {
+          addEdge(leftTable, rightTable, "IMPLICIT", [pair]);
+        }
+      });
     }
 
     if (firstJoin && fromInfo.where) {
@@ -463,21 +414,71 @@
         var leftTable = tableFromColumnRef(pair.left, nodes);
         var rightTable = tableFromColumnRef(pair.right, nodes);
         if (leftTable && rightTable && leftTable !== rightTable) {
-          var exists = edges.some(function (e) {
-            return (
-              (e.source === leftTable && e.target === rightTable) ||
-              (e.source === rightTable && e.target === leftTable)
-            );
-          });
-          if (!exists) addEdge(leftTable, rightTable, "IMPLICIT", [pair]);
+          addEdge(leftTable, rightTable, "IMPLICIT", [pair]);
         }
       });
+    }
+
+    return true;
+  }
+
+  /**
+   * @param {string} rawSql
+   * @param {{ subquery: string, cte: string }} labels
+   * @returns {{ nodes: Array, edges: Array, meta: Object }}
+   */
+  function extractRelationships(rawSql, labels) {
+    labels = labels || { subquery: "Subquery", cte: "CTE" };
+    var sql = normalizer.normalizeSql(rawSql);
+    var nodes = {};
+    var edges = [];
+    var edgeKeys = {};
+    var hadFrom = false;
+
+    function addEdge(sourceId, targetId, joinType, conditions, extra) {
+      if (!sourceId || !targetId || sourceId === targetId) return;
+      var key =
+        [sourceId, targetId].sort().join("|") +
+        "|" +
+        joinType +
+        "|" +
+        JSON.stringify(conditions || []);
+      if (edgeKeys[key]) return;
+      edgeKeys[key] = true;
+      edges.push({
+        id: "e" + edges.length,
+        source: sourceId,
+        target: targetId,
+        joinType: joinType,
+        conditions: conditions || [],
+        detail: extra || "",
+      });
+    }
+
+    var cteResult = extractCtes(sql);
+    Object.keys(cteResult.ctes).forEach(function (name) {
+      nodes[name] = {
+        id: name,
+        label: name,
+        kind: "cte",
+        expression: cteResult.ctes[name],
+      };
+    });
+
+    Object.keys(cteResult.ctes).forEach(function (name) {
+      if (analyzeFromBlock(cteResult.ctes[name], nodes, labels, addEdge)) {
+        hadFrom = true;
+      }
+    });
+
+    if (analyzeFromBlock(cteResult.sql, nodes, labels, addEdge)) {
+      hadFrom = true;
     }
 
     return {
       nodes: Object.values(nodes),
       edges: edges,
-      meta: { hadFrom: true },
+      meta: { hadFrom: hadFrom },
     };
   }
 

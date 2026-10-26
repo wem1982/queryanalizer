@@ -57,7 +57,7 @@ Each edge includes:
 
 The extractor is **intentionally heuristic**, not a full SQL AST:
 
-- Locates the main `FROM` clause segment (stops at `WHERE`, `GROUP BY`, etc.).
+- Walks each **CTE body** and the **main query** after `WITH`, locating `FROM` / `JOIN` in each (stops at `WHERE`, `GROUP BY`, etc.).
 - Walks explicit `JOIN` keywords longest-match-first (`LEFT OUTER JOIN` before `JOIN`).
 - Splits comma-separated `FROM` lists only when no `JOIN` keyword appears in the fragment before the first join.
 - Parses `ON` conditions by splitting on `AND` at parenthesis depth zero.

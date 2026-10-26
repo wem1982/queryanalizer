@@ -67,7 +67,3 @@
   color: var(--color-text-muted);
 }
 
-.relations-list {
-  border-color: var(--color-accent);
-  border-width: 1px;
-}

@@ -75,8 +75,19 @@
       this.theme = loadStoredTheme();
       applyTheme(this.theme);
       this.i18n.applyToDocument();
+      this.updateFooterPrivacy();
       this.bindEvents();
       this.updateLangButtons();
+    },
+
+    updateFooterPrivacy: function () {
+      var el = $("footer-privacy");
+      if (!el) return;
+      var onPages =
+        typeof location !== "undefined" &&
+        location.hostname === "wem1982.github.io" &&
+        location.pathname.indexOf("/queryanalizer") === 0;
+      el.classList.toggle("is-hidden", !onPages);
     },
 
     bindEvents: function () {
@@ -105,11 +116,13 @@
       this.i18n.setLocale(locale);
       saveLocale(locale);
       this.i18n.applyToDocument();
+      this.updateFooterPrivacy();
       this.updateLangButtons();
       applyTheme(this.theme);
       if (this.lastModel) {
         this.updateStats(this.lastModel);
         this.renderGraph(this.lastModel);
+        this.renderRelationList(this.lastModel);
       }
     },
 
@@ -135,7 +148,7 @@
       this.lastModel = model;
       this.updateStats(model);
 
-      if (!model.edges.length) {
+      if (!model.nodes.length) {
         this.showNoRelations();
         return;
       }
@@ -162,14 +175,46 @@
 
     renderRelationList: function (model) {
       var list = $("relations-list");
-      var ul = document.createElement("ul");
+      var listedEdges = {};
+      list.innerHTML = "";
+
+      model.nodes.forEach(function (node) {
+        var nodeEdges = model.edges.filter(function (e) {
+          return (
+            !listedEdges[e.id] && (e.source === node.id || e.target === node.id)
+          );
+        });
+
+        if (!nodeEdges.length) {
+          var isolated = document.createElement("li");
+          isolated.textContent =
+            node.label + " — " + app.i18n.t("noRelationshipFound");
+          list.appendChild(isolated);
+          return;
+        }
+
+        nodeEdges.forEach(function (edge) {
+          listedEdges[edge.id] = true;
+          var li = document.createElement("li");
+          li.textContent = formatRelationLine(edge, app.i18n);
+          list.appendChild(li);
+        });
+      });
+
       model.edges.forEach(function (edge) {
+        if (listedEdges[edge.id]) return;
+        listedEdges[edge.id] = true;
         var li = document.createElement("li");
         li.textContent = formatRelationLine(edge, app.i18n);
-        ul.appendChild(li);
+        list.appendChild(li);
       });
-      list.innerHTML = "";
-      list.appendChild(ul);
+
+      if (!list.children.length) {
+        var empty = document.createElement("li");
+        empty.textContent = app.i18n.t("noRelationshipFound");
+        list.appendChild(empty);
+      }
+
       list.classList.remove("is-hidden");
     },
 

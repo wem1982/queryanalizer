@@ -4,6 +4,7 @@
   var MESSAGES = {
     en: {
       appName: "QueryAnalyzer",
+      appTitle: "QueryAnalyzer by William Marques",
       tagline: "SQL relationship visualization",
       heroTitle: "Map table relationships in your SQL",
       heroDescription:
@@ -22,6 +23,9 @@
       relationListTitle: "Detected links",
       footerPrefix: "QueryAnalyzer by",
       footerSuffix: "MIT — free use with attribution.",
+      footerPrivacy:
+        "On https://wem1982.github.io/queryanalizer/, your SQL stays in the browser and is not saved on any server.",
+      noRelationshipFound: "NO RELATIONSHIP FOUND",
       joinInner: "INNER",
       joinLeft: "LEFT",
       joinRight: "RIGHT",
@@ -39,6 +43,7 @@
     },
     pt: {
       appName: "QueryAnalyzer",
+      appTitle: "QueryAnalyzer by William Marques",
       tagline: "Visualização de relações SQL",
       heroTitle: "Mapeie relações entre tabelas na sua SQL",
       heroDescription:
@@ -57,6 +62,9 @@
       relationListTitle: "Vínculos detectados",
       footerPrefix: "QueryAnalyzer por",
       footerSuffix: "MIT — uso livre com atribuição ao autor.",
+      footerPrivacy:
+        "Em https://wem1982.github.io/queryanalizer/, sua SQL é processada no navegador e não é salva em nenhum servidor.",
+      noRelationshipFound: "NO RELATIONSHIP FOUND",
       joinInner: "INNER",
       joinLeft: "LEFT",
       joinRight: "RIGHT",

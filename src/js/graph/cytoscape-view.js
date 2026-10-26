@@ -205,6 +205,33 @@
     ];
   }
 
+  function alignIsolatedNodesRight(cy) {
+    var isolated = cy.nodes().filter(function (n) {
+      return n.degree(false) === 0;
+    });
+    if (!isolated.length) return;
+
+    var connected = cy.nodes().filter(function (n) {
+      return n.degree(false) > 0;
+    });
+
+    var bb = connected.length > 0 ? connected.boundingBox() : { x1: 0, y1: 0, x2: 320, y2: 320 };
+    var bbW = bb.x2 - bb.x1;
+    var bbH = bb.y2 - bb.y1;
+
+    var rightX = bb.x2 + Math.max(140, bbW * 0.25);
+    var step = 72;
+    var totalHeight = (isolated.length - 1) * step;
+    var startY = bb.y1 + (bbH - totalHeight) / 2;
+
+    isolated.forEach(function (node, index) {
+      node.position({
+        x: rightX,
+        y: startY + index * step,
+      });
+    });
+  }
+
   function render(container, model, i18n, isLight) {
     if (!global.cytoscape) {
       console.error("Cytoscape.js not loaded");
@@ -229,8 +256,14 @@
         idealEdgeLength: 140,
         edgeElasticity: 100,
         padding: 40,
+        componentSpacing: 120,
       },
       wheelSensitivity: 0.2,
+    });
+
+    cyInstance.one("layoutstop", function () {
+      alignIsolatedNodesRight(cyInstance);
+      cyInstance.fit(undefined, 48);
     });
 
     cyInstance.on("tap", "edge", function (evt) {

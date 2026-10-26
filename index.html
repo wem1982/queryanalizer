@@ -7,7 +7,7 @@
       name="description"
       content="QueryAnalyzer — interactive SQL relationship graph in the browser. No install required."
     />
-    <title>QueryAnalyzer</title>
+    <title>QueryAnalyzer by William Marques</title>
     <link rel="stylesheet" href="src/css/main.css" />
     <link rel="stylesheet" href="src/css/graph.css" />
   </head>
@@ -16,7 +16,7 @@
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">QA</div>
         <div>
-          <h1 data-i18n="appName">QueryAnalyzer</h1>
+          <h1 data-i18n="appTitle">QueryAnalyzer by William Marques</h1>
           <p class="brand-tagline" data-i18n="tagline">SQL relationship visualization</p>
         </div>
       </div>
@@ -107,9 +107,15 @@
               </p>
             </div>
             <div id="graph-container" class="is-hidden" role="img" aria-label="Relationship graph"></div>
-            <div id="relations-list" class="relations-list is-hidden" aria-live="polite">
-              <span class="sr-only" data-i18n="relationListTitle">Detected links</span>
-            </div>
+            <ol
+              id="relations-list"
+              class="relations-list is-hidden"
+              aria-live="polite"
+              aria-labelledby="relation-list-heading"
+            ></ol>
+            <span id="relation-list-heading" class="sr-only" data-i18n="relationListTitle"
+              >Detected links</span
+            >
           </div>
         </section>
       </div>
@@ -121,6 +127,7 @@
         <a href="https://github.com/wem1982" target="_blank" rel="noopener noreferrer">William Marques</a>.
         <span data-i18n="footerSuffix">MIT — free use with attribution.</span>
       </p>
+      <p id="footer-privacy" class="footer-privacy is-hidden" data-i18n="footerPrivacy"></p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>

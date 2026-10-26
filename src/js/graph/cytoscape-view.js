@@ -4,13 +4,13 @@
   var cyInstance = null;
 
   var JOIN_COLORS = {
-    INNER: "#3b82f6",
-    LEFT: "#22c55e",
-    RIGHT: "#f59e0b",
-    FULL: "#a855f7",
-    CROSS: "#64748b",
-    IMPLICIT: "#ec4899",
-    NATURAL: "#14b8a6",
+    INNER: "#38bdf8",
+    LEFT: "#4ade80",
+    RIGHT: "#fbbf24",
+    FULL: "#e879f9",
+    CROSS: "#cbd5e1",
+    IMPLICIT: "#fb7185",
+    NATURAL: "#5eead4",
   };
 
   function joinLabel(joinType, i18n) {
@@ -50,8 +50,7 @@
 
     model.edges.forEach(function (e) {
       var cond = formatConditions(e.conditions);
-      var label = joinLabel(e.joinType, i18n);
-      if (cond) label += "\n" + cond;
+      var shortLabel = joinLabel(e.joinType, i18n);
       elements.push({
         classes: "join-" + e.joinType.toLowerCase(),
         data: {
@@ -59,7 +58,7 @@
           source: e.source,
           target: e.target,
           joinType: e.joinType,
-          edgeLabel: label,
+          edgeLabel: shortLabel,
           conditions: cond,
         },
       });
@@ -70,8 +69,27 @@
 
   function getStylesheet(isLight) {
     var nodeBg = isLight ? "#ffffff" : "#243044";
-    var nodeBorder = isLight ? "#2563eb" : "#3b82f6";
-    var text = isLight ? "#0f172a" : "#e8edf4";
+    var nodeBorder = isLight ? "#2563eb" : "#60a5fa";
+    var text = isLight ? "#0f172a" : "#f8fafc";
+    var edgeLabelBg = isLight ? "#ffffff" : "#0f172a";
+    var edgeLabelBorder = isLight ? "#cbd5e1" : "#475569";
+
+    var edgeLabelBase = {
+      label: "data(edgeLabel)",
+      "font-size": 11,
+      "font-weight": 700,
+      "text-rotation": "autorotate",
+      "text-margin-y": -10,
+      color: text,
+      "text-background-color": edgeLabelBg,
+      "text-background-opacity": 1,
+      "text-background-padding": "5px",
+      "text-background-shape": "roundrectangle",
+      "text-border-color": edgeLabelBorder,
+      "text-border-width": 1,
+      "text-border-opacity": 1,
+      "text-wrap": "none",
+    };
 
     return [
       {
@@ -102,36 +120,87 @@
       {
         selector: 'node[kind = "cte"]',
         style: {
-          "border-color": "#8b5cf6",
+          "border-color": "#c084fc",
         },
       },
       {
         selector: "edge",
+        style: Object.assign(
+          {
+            width: 3.5,
+            "curve-style": "bezier",
+            "target-arrow-shape": "triangle",
+            "arrow-scale": 1.2,
+            "line-color": "#94a3b8",
+            "target-arrow-color": "#94a3b8",
+            opacity: 0.95,
+          },
+          edgeLabelBase
+        ),
+      },
+      {
+        selector: "edge:selected",
         style: {
-          width: 2,
-          "curve-style": "bezier",
-          "target-arrow-shape": "triangle",
-          label: "data(edgeLabel)",
-          "font-size": 9,
-          "text-rotation": "autorotate",
-          "text-margin-y": -8,
-          color: text,
-          "line-color": "#94a3b8",
-          "target-arrow-color": "#94a3b8",
+          width: 5,
+          opacity: 1,
         },
       },
-      { selector: ".join-inner", style: { "line-color": JOIN_COLORS.INNER, "target-arrow-color": JOIN_COLORS.INNER } },
-      { selector: ".join-left", style: { "line-color": JOIN_COLORS.LEFT, "target-arrow-color": JOIN_COLORS.LEFT } },
-      { selector: ".join-right", style: { "line-color": JOIN_COLORS.RIGHT, "target-arrow-color": JOIN_COLORS.RIGHT } },
-      { selector: ".join-full", style: { "line-color": JOIN_COLORS.FULL, "target-arrow-color": JOIN_COLORS.FULL } },
-      { selector: ".join-cross", style: { "line-color": JOIN_COLORS.CROSS, "target-arrow-color": JOIN_COLORS.CROSS } },
+      {
+        selector: ".join-inner",
+        style: {
+          "line-color": JOIN_COLORS.INNER,
+          "target-arrow-color": JOIN_COLORS.INNER,
+          color: isLight ? "#0369a1" : "#e0f2fe",
+        },
+      },
+      {
+        selector: ".join-left",
+        style: {
+          "line-color": JOIN_COLORS.LEFT,
+          "target-arrow-color": JOIN_COLORS.LEFT,
+          color: isLight ? "#15803d" : "#dcfce7",
+        },
+      },
+      {
+        selector: ".join-right",
+        style: {
+          "line-color": JOIN_COLORS.RIGHT,
+          "target-arrow-color": JOIN_COLORS.RIGHT,
+          color: isLight ? "#b45309" : "#fef3c7",
+        },
+      },
+      {
+        selector: ".join-full",
+        style: {
+          "line-color": JOIN_COLORS.FULL,
+          "target-arrow-color": JOIN_COLORS.FULL,
+          color: isLight ? "#7e22ce" : "#fae8ff",
+        },
+      },
+      {
+        selector: ".join-cross",
+        style: {
+          "line-color": JOIN_COLORS.CROSS,
+          "target-arrow-color": JOIN_COLORS.CROSS,
+        },
+      },
       {
         selector: ".join-implicit",
-        style: { "line-color": JOIN_COLORS.IMPLICIT, "target-arrow-color": JOIN_COLORS.IMPLICIT, "line-style": "dashed" },
+        style: {
+          "line-color": JOIN_COLORS.IMPLICIT,
+          "target-arrow-color": JOIN_COLORS.IMPLICIT,
+          "line-style": "dashed",
+          "line-dash-pattern": [8, 4],
+          color: isLight ? "#be123c" : "#ffe4e6",
+        },
       },
       {
         selector: ".join-natural",
-        style: { "line-color": JOIN_COLORS.NATURAL, "target-arrow-color": JOIN_COLORS.NATURAL },
+        style: {
+          "line-color": JOIN_COLORS.NATURAL,
+          "target-arrow-color": JOIN_COLORS.NATURAL,
+          color: isLight ? "#0f766e" : "#ccfbf1",
+        },
       },
     ];
   }
@@ -156,16 +225,17 @@
         name: "cose",
         animate: true,
         animationDuration: 400,
-        nodeRepulsion: 8000,
-        idealEdgeLength: 120,
+        nodeRepulsion: 9000,
+        idealEdgeLength: 140,
+        edgeElasticity: 100,
         padding: 40,
       },
       wheelSensitivity: 0.2,
     });
 
     cyInstance.on("tap", "edge", function (evt) {
-      var edge = evt.target;
-      edge.select();
+      cyInstance.$("edge:selected").unselect();
+      evt.target.select();
     });
 
     return cyInstance;

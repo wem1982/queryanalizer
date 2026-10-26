@@ -82,8 +82,8 @@ QueryAnalyzer/
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+[MIT](LICENSE) — free to use, copy, modify, and distribute. You must **always credit the author** William Marques ([github.com/wem1982](https://github.com/wem1982)) and include the license notice in copies or derivatives.
 
 ## Author
 
-Portfolio project — [wem1982/queryanalizer](https://github.com/wem1982/queryanalizer)
+**William Marques** — [github.com/wem1982](https://github.com/wem1982) · [queryanalizer](https://github.com/wem1982/queryanalizer)

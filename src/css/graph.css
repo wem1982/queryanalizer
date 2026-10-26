@@ -26,38 +26,48 @@
 }
 
 .legend-swatch {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .legend-swatch {
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.12);
 }
 
 .legend-swatch--inner {
-  background: #3b82f6;
+  background: #38bdf8;
 }
 
 .legend-swatch--left {
-  background: #22c55e;
+  background: #4ade80;
 }
 
 .legend-swatch--right {
-  background: #f59e0b;
+  background: #fbbf24;
 }
 
 .legend-swatch--full {
-  background: #a855f7;
+  background: #e879f9;
 }
 
 .legend-swatch--cross {
-  background: #64748b;
+  background: #cbd5e1;
 }
 
 .legend-swatch--implicit {
-  background: #ec4899;
-  border: 1px dashed #ec4899;
+  background: #fb7185;
+  border: 2px dashed #fb7185;
   background: transparent;
 }
 
 .graph-hint {
   font-size: 0.75rem;
   color: var(--color-text-muted);
+}
+
+.relations-list {
+  border-color: var(--color-accent);
+  border-width: 1px;
 }

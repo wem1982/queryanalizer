@@ -51,3 +51,7 @@ Edge labels show join type and, when available, column equality expressions.
 ## Privacy
 
 All processing happens in your browser. Queries are not sent to any server unless you choose to share them yourself.
+
+## Credits & license
+
+QueryAnalyzer by **William Marques** ([github.com/wem1982](https://github.com/wem1982)). MIT license: free use and copying with **mandatory attribution** to the author. See [LICENSE](../LICENSE).

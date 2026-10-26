@@ -1,6 +1,6 @@
 # Architecture
 
-QueryAnalyzer is a static single-page application. All behavior runs in the browser; there is no build step and no server-side component.
+QueryAnalyzer is a static single-page application by **William Marques** ([github.com/wem1982](https://github.com/wem1982)). All behavior runs in the browser; there is no build step and no server-side component. Licensed under MIT with required attribution (see [LICENSE](../LICENSE)).
 
 ## High-level flow
 

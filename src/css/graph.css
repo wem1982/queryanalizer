@@ -1,0 +1,63 @@
+#graph-container {
+  flex: 1;
+  min-height: 320px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  position: relative;
+}
+
+#graph-container.is-hidden {
+  display: none;
+}
+
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.legend-swatch--inner {
+  background: #3b82f6;
+}
+
+.legend-swatch--left {
+  background: #22c55e;
+}
+
+.legend-swatch--right {
+  background: #f59e0b;
+}
+
+.legend-swatch--full {
+  background: #a855f7;
+}
+
+.legend-swatch--cross {
+  background: #64748b;
+}
+
+.legend-swatch--implicit {
+  background: #ec4899;
+  border: 1px dashed #ec4899;
+  background: transparent;
+}
+
+.graph-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}

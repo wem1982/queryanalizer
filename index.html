@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="QueryAnalyzer — interactive SQL relationship graph in the browser. No install required."
+    />
+    <title>QueryAnalyzer</title>
+    <link rel="stylesheet" href="src/css/main.css" />
+    <link rel="stylesheet" href="src/css/graph.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">QA</div>
+        <div>
+          <h1 data-i18n="appName">QueryAnalyzer</h1>
+          <p class="brand-tagline" data-i18n="tagline">SQL relationship visualization</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="Interface language">
+          <button type="button" id="lang-en" class="is-active">EN</button>
+          <button type="button" id="lang-pt">PT</button>
+        </div>
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          ☀️
+        </button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="hero">
+        <h2 data-i18n="heroTitle">Map table relationships in your SQL</h2>
+        <p data-i18n="heroDescription">
+          Paste a single SELECT-style query. QueryAnalyzer extracts joins and column links and
+          renders an interactive graph.
+        </p>
+      </section>
+
+      <div class="workspace">
+        <section class="panel" aria-labelledby="panel-query-title">
+          <div class="panel-header">
+            <h3 id="panel-query-title" data-i18n="panelQuery">SQL query</h3>
+          </div>
+          <div class="panel-body">
+            <label for="sql-input" class="sr-only" data-i18n="panelQuery">SQL query</label>
+            <textarea
+              id="sql-input"
+              spellcheck="false"
+              data-i18n="placeholderSql"
+              placeholder="SELECT ..."
+            ></textarea>
+            <div class="panel-actions">
+              <button type="button" id="btn-analyze" class="btn btn-primary" data-i18n="analyze">
+                Analyze relationships
+              </button>
+              <button type="button" id="btn-clear" class="btn btn-secondary" data-i18n="clear">
+                Clear
+              </button>
+            </div>
+            <div class="stats-bar">
+              <span
+                ><span data-i18n="tables">Tables</span>: <strong id="stat-tables">0</strong></span
+              >
+              <span
+                ><span data-i18n="relations">Relations</span>:
+                <strong id="stat-relations">0</strong></span
+              >
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="panel-graph-title">
+          <div class="panel-header">
+            <h3 id="panel-graph-title" data-i18n="panelGraph">Relationship graph</h3>
+          </div>
+          <div class="panel-body">
+            <div class="graph-legend" aria-hidden="true">
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--inner"></span> INNER</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--left"></span> LEFT</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--right"></span> RIGHT</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--full"></span> FULL</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--cross"></span> CROSS</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--implicit"></span> WHERE</span
+              >
+            </div>
+            <p class="graph-hint" data-i18n="graphHint">Drag nodes, scroll to zoom.</p>
+            <div id="graph-empty" class="empty-state">
+              <div class="empty-state-icon" aria-hidden="true">◇</div>
+              <strong id="graph-empty-title" data-i18n="emptyTitle">No analysis yet</strong>
+              <p id="graph-empty-desc" data-i18n="emptyDescription">
+                Enter a SQL query and click Analyze.
+              </p>
+            </div>
+            <div id="graph-container" class="is-hidden" role="img" aria-label="Relationship graph"></div>
+            <div id="relations-list" class="relations-list is-hidden" aria-live="polite">
+              <span class="sr-only" data-i18n="relationListTitle">Detected links</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <p data-i18n="footer">QueryAnalyzer — portfolio demo.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+    <script src="src/js/i18n/messages.js"></script>
+    <script src="src/js/parser/sql-normalizer.js"></script>
+    <script src="src/js/parser/relationship-extractor.js"></script>
+    <script src="src/js/graph/cytoscape-view.js"></script>
+    <script src="src/js/app.js"></script>
+    <script src="src/js/main.js"></script>
+  </body>
+</html>

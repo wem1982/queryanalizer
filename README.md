@@ -1,5 +1,7 @@
 # QueryAnalyzer
 
+**Live demo:** [https://wem1982.github.io/queryanalizer/](https://wem1982.github.io/queryanalizer/)
+
 QueryAnalyzer is a **zero-install**, browser-only tool that turns a SQL query into an **interactive relationship graph**. Paste one query, explore tables and joins visually, and switch the interface between **English** and **Portuguese**.
 
 > **Scope:** relationship discovery only. The app does **not** validate SQL syntax or report errors.

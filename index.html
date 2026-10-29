@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QueryAnalyzer — SQL Join &amp; Relationship Graph Visualizer | Will Markz</title>
+    <meta
+      name="description"
+      content="Paste complex SQL and instantly visualize table joins, CTEs, and relationships in an interactive graph. Free browser tool by Will Markz — private, no install, export PDF."
+    />
+    <meta
+      name="keywords"
+      content="SQL analyzer, SQL join visualizer, relationship graph, query analyzer, CTE, database schema, Will Markz, QueryAnalyzer"
+    />
+    <meta name="author" content="Will Markz" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="canonical" href="https://willmarkz.github.io/queryanalizer/" />
+    <link rel="alternate" hreflang="en" href="https://willmarkz.github.io/queryanalizer/" />
+    <link rel="alternate" hreflang="pt-BR" href="https://willmarkz.github.io/queryanalizer/" />
+    <link rel="alternate" hreflang="x-default" href="https://willmarkz.github.io/queryanalizer/" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/favicon.svg" />
+    <link rel="manifest" href="site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="QueryAnalyzer" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="pt_BR" />
+    <meta property="og:url" content="https://willmarkz.github.io/queryanalizer/" />
+    <meta
+      property="og:title"
+      content="QueryAnalyzer — SQL Join &amp; Relationship Graph Visualizer | Will Markz"
+    />
+    <meta
+      property="og:description"
+      content="Paste complex SQL and instantly visualize table joins, CTEs, and relationships in an interactive graph. Free browser tool — private, no install."
+    />
+    <meta property="og:image" content="https://willmarkz.github.io/queryanalizer/assets/og-cover.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="QueryAnalyzer SQL relationship graph tool by Will Markz" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="QueryAnalyzer — SQL Join &amp; Relationship Graph Visualizer" />
+    <meta
+      name="twitter:description"
+      content="Visualize SQL joins and table relationships in seconds. Runs in your browser with full privacy."
+    />
+    <meta name="twitter:image" content="https://willmarkz.github.io/queryanalizer/assets/og-cover.svg" />
+    <meta name="twitter:creator" content="@willmarkz" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://willmarkz.github.io/queryanalizer/#website",
+            "url": "https://willmarkz.github.io/queryanalizer/",
+            "name": "QueryAnalyzer",
+            "description": "Interactive SQL relationship and join graph visualizer in the browser.",
+            "inLanguage": ["en", "pt-BR"],
+            "publisher": { "@id": "https://willmarkz.github.io/queryanalizer/#person" }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://willmarkz.github.io/queryanalizer/#app",
+            "name": "QueryAnalyzer",
+            "url": "https://willmarkz.github.io/queryanalizer/",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+            "author": { "@id": "https://willmarkz.github.io/queryanalizer/#person" },
+            "description": "Paste SQL queries to extract joins and render an interactive relationship graph. Includes CTE view, PDF export, and fullscreen graph.",
+            "featureList": [
+              "SQL join and relationship extraction",
+              "Interactive Cytoscape graph",
+              "CTE and physical-table view modes",
+              "PDF documentation export",
+              "English and Portuguese UI"
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://willmarkz.github.io/queryanalizer/#person",
+            "name": "Will Markz",
+            "url": "https://github.com/willmarkz",
+            "sameAs": ["https://github.com/willmarkz"]
+          }
+        ]
+      }
+    </script>
+    <link rel="stylesheet" href="src/css/main.css" />
+    <link rel="stylesheet" href="src/css/graph.css" />
+    <link rel="stylesheet" href="src/css/features.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">SQL</div>
+        <div>
+          <h1 data-i18n="appTitle">QueryAnalyzer by Will Markz</h1>
+          <p class="brand-tagline" data-i18n="tagline">SQL relationship visualization</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="Interface language">
+          <button type="button" id="lang-en" class="is-active">EN</button>
+          <button type="button" id="lang-pt">PT</button>
+        </div>
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          ☀️
+        </button>
+      </div>
+    </header>
+
+    <div
+      id="welcome-banner"
+      class="welcome-banner is-hidden"
+      role="region"
+      aria-labelledby="welcome-banner-text"
+    >
+      <div class="welcome-banner__inner">
+        <p id="welcome-banner-text" class="welcome-banner__text" data-i18n="welcomeMessage"></p>
+        <button type="button" id="welcome-dismiss" class="welcome-banner__close" data-i18n="welcomeDismiss">
+          Got it
+        </button>
+      </div>
+    </div>
+
+    <main class="app-main" id="main-content">
+      <section class="hero">
+        <h2 data-i18n="heroTitle">Map table relationships in your SQL</h2>
+        <p data-i18n="heroDescription">
+          Paste a single SELECT-style query. QueryAnalyzer extracts joins and column links and
+          renders an interactive graph.
+        </p>
+      </section>
+
+      <div class="workspace">
+        <section class="panel" aria-labelledby="panel-query-title">
+          <div class="panel-header">
+            <h3 id="panel-query-title" class="panel-query-title" data-i18n="panelQuery">
+              Paste or write your SQL query here (processed only in your browser, fully private)
+            </h3>
+          </div>
+          <div class="panel-body">
+            <label for="sql-input" class="sr-only" data-i18n="panelQuery"
+              >Paste or write your SQL query here (processed only in your browser, fully
+              private)</label
+            >
+            <textarea
+              id="sql-input"
+              spellcheck="false"
+              data-i18n="placeholderSql"
+              placeholder="SELECT ..."
+            ></textarea>
+            <div class="panel-actions">
+              <button type="button" id="btn-analyze" class="btn btn-primary" data-i18n="analyze">
+                Analyze relationships
+              </button>
+              <button type="button" id="btn-example" class="btn btn-secondary" data-i18n="viewExample">
+                View example
+              </button>
+              <button type="button" id="btn-clear" class="btn btn-secondary" data-i18n="clear">
+                Clear
+              </button>
+            </div>
+            <div class="stats-bar">
+              <span
+                ><span data-i18n="tables">Tables</span>: <strong id="stat-tables">0</strong></span
+              >
+              <span
+                ><span data-i18n="relations">Relations</span>:
+                <strong id="stat-relations">0</strong></span
+              >
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="panel-graph-title">
+          <div class="panel-header">
+            <h3 id="panel-graph-title" data-i18n="panelGraph">Relationship graph</h3>
+          </div>
+          <div class="panel-body">
+            <div class="graph-legend" aria-hidden="true">
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--inner"></span> INNER</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--left"></span> LEFT</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--right"></span> RIGHT</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--full"></span> FULL</span
+              >
+              <span class="legend-item"
+                ><span class="legend-swatch legend-swatch--cross"></span> CROSS</span
+              >
+            </div>
+            <div id="graph-stage" class="graph-stage">
+              <div class="graph-toolbar">
+                <div
+                  class="view-mode-switch lang-switch"
+                  role="group"
+                  aria-labelledby="view-mode-label"
+                >
+                  <span id="view-mode-label" class="sr-only" data-i18n="viewModeLabel"
+                    >Graph view mode</span
+                  >
+                  <button type="button" id="view-include-cte" class="is-active" data-i18n="viewIncludeCte">
+                    Include CTEs
+                  </button>
+                  <button type="button" id="view-physical-only" data-i18n="viewPhysicalOnly">
+                    Physical tables only
+                  </button>
+                </div>
+                <div class="graph-toolbar-actions">
+                  <button
+                    type="button"
+                    id="btn-fullscreen"
+                    class="btn btn-secondary btn-sm"
+                    disabled
+                  >
+                    Fullscreen graph
+                  </button>
+                  <button
+                    type="button"
+                    id="btn-export-pdf"
+                    class="btn btn-secondary btn-sm"
+                    data-i18n="exportPdf"
+                    disabled
+                  >
+                    Export PDF
+                  </button>
+                </div>
+              </div>
+              <p class="graph-hint" data-i18n="graphHint">Drag nodes, scroll to zoom.</p>
+              <div class="graph-viewport">
+                <div id="graph-empty" class="empty-state graph-viewport-layer">
+                  <div class="empty-state-icon" aria-hidden="true">◇</div>
+                  <strong id="graph-empty-title" data-i18n="emptyTitle">No analysis yet</strong>
+                  <p id="graph-empty-desc" data-i18n="emptyDescription">
+                    Enter a SQL query and click Analyze.
+                  </p>
+                </div>
+                <div
+                  id="graph-container"
+                  class="graph-viewport-layer is-hidden"
+                  role="img"
+                  aria-label="Relationship graph"
+                ></div>
+              </div>
+            </div>
+            <ol
+              id="relations-list"
+              class="relations-list is-hidden"
+              aria-live="polite"
+              aria-labelledby="relation-list-heading"
+            ></ol>
+            <span id="relation-list-heading" class="sr-only" data-i18n="relationListTitle"
+              >Detected links</span
+            >
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <p>
+        <span data-i18n="footerPrefix">QueryAnalyzer by</span>
+        <a href="https://github.com/willmarkz" target="_blank" rel="noopener noreferrer author" data-i18n="authorName"
+          >Will Markz</a
+        >.
+        <span data-i18n="footerSuffix">MIT — free use with attribution.</span>
+      </p>
+      <p id="footer-privacy" class="footer-privacy is-hidden" data-i18n="footerPrivacy"></p>
+    </footer>
+
+    <div class="share-widget" id="share-widget">
+      <div id="share-menu" class="share-widget__menu is-hidden" role="dialog" aria-labelledby="share-menu-title">
+        <p id="share-menu-title" class="share-widget__title">Share QueryAnalyzer</p>
+        <ul id="share-menu-list" class="share-widget__list"></ul>
+      </div>
+      <button
+        type="button"
+        id="share-fab"
+        class="share-fab"
+        aria-expanded="false"
+        aria-controls="share-menu"
+      >
+        <span class="share-fab__icon" aria-hidden="true">↗</span>
+        <span id="share-fab-label">Share</span>
+      </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script src="src/js/i18n/messages.js"></script>
+    <script src="src/js/parser/sql-normalizer.js"></script>
+    <script src="src/js/parser/relationship-extractor.js"></script>
+    <script src="src/js/model-filter.js"></script>
+    <script src="src/js/graph/cytoscape-view.js"></script>
+    <script src="src/js/export/pdf-export.js"></script>
+    <script src="src/js/data/demo-query.js"></script>
+    <script src="src/js/ui/welcome-share.js"></script>
+    <script src="src/js/app.js"></script>
+    <script src="src/js/main.js"></script>
+  </body>
+</html>

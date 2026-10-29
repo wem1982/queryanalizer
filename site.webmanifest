@@ -1,0 +1,11 @@
+{
+  "name": "QueryAnalyzer by Will Markz",
+  "short_name": "QueryAnalyzer",
+  "description": "Visualize SQL joins and table relationships in an interactive graph. Runs entirely in your browser.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1419",
+  "theme_color": "#2563eb",
+  "lang": "en"
+}

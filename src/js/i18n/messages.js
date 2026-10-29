@@ -9,7 +9,8 @@
       heroTitle: "Map table relationships in your SQL",
       heroDescription:
         "Paste a single SELECT-style query. QueryAnalyzer extracts joins and column links and renders an interactive graph. Syntax validation is out of scope — only structural relationships are shown.",
-      panelQuery: "SQL query",
+      panelQuery:
+        "Paste or write your SQL query here (processed only in your browser, fully private)",
       panelGraph: "Relationship graph",
       placeholderSql:
         "SELECT o.id, c.name\nFROM orders o\nINNER JOIN customers c ON c.id = o.customer_id\nWHERE o.status = 'open';",
@@ -65,7 +66,8 @@
       heroTitle: "Mapeie relações entre tabelas na sua SQL",
       heroDescription:
         "Cole uma única consulta no estilo SELECT. O QueryAnalyzer extrai joins e vínculos por coluna e exibe um grafo interativo. Validação de sintaxe não faz parte do escopo — apenas relações estruturais.",
-      panelQuery: "Consulta SQL",
+      panelQuery:
+        "Cole aqui ou escreva sua consulta SQL (Será processada apenas no seu navegador com total privacidade)",
       panelGraph: "Grafo de relações",
       placeholderSql:
         "SELECT p.id, c.nome\nFROM pedidos p\nINNER JOIN clientes c ON c.id = p.cliente_id\nWHERE p.status = 'aberto';",

@@ -111,12 +111,6 @@
   background: #cbd5e1;
 }
 
-.legend-swatch--implicit {
-  background: #fb7185;
-  border: 2px dashed #fb7185;
-  background: transparent;
-}
-
 .graph-hint {
   font-size: 0.75rem;
   color: var(--color-text-muted);

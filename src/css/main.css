@@ -42,14 +42,15 @@ body {
 }
 
 .brand-mark {
-  width: 36px;
+  width: 40px;
   height: 36px;
   border-radius: var(--radius-sm);
   background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
   display: grid;
   place-items: center;
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
+  letter-spacing: -0.04em;
   color: #fff;
 }
 
@@ -173,6 +174,13 @@ body {
   margin: 0;
   font-size: 0.9375rem;
   font-weight: 600;
+}
+
+.panel-query-title {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-text-muted);
 }
 
 .panel-body {

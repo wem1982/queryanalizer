@@ -14,7 +14,7 @@
   <body>
     <header class="app-header">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">QA</div>
+        <div class="brand-mark" aria-hidden="true">SQL</div>
         <div>
           <h1 data-i18n="appTitle">QueryAnalyzer by William Marques</h1>
           <p class="brand-tagline" data-i18n="tagline">SQL relationship visualization</p>
@@ -43,10 +43,15 @@
       <div class="workspace">
         <section class="panel" aria-labelledby="panel-query-title">
           <div class="panel-header">
-            <h3 id="panel-query-title" data-i18n="panelQuery">SQL query</h3>
+            <h3 id="panel-query-title" class="panel-query-title" data-i18n="panelQuery">
+              Paste or write your SQL query here (processed only in your browser, fully private)
+            </h3>
           </div>
           <div class="panel-body">
-            <label for="sql-input" class="sr-only" data-i18n="panelQuery">SQL query</label>
+            <label for="sql-input" class="sr-only" data-i18n="panelQuery"
+              >Paste or write your SQL query here (processed only in your browser, fully
+              private)</label
+            >
             <textarea
               id="sql-input"
               spellcheck="false"
@@ -96,9 +101,6 @@
               >
               <span class="legend-item"
                 ><span class="legend-swatch legend-swatch--cross"></span> CROSS</span
-              >
-              <span class="legend-item"
-                ><span class="legend-swatch legend-swatch--implicit"></span> WHERE</span
               >
             </div>
             <div id="graph-stage" class="graph-stage">

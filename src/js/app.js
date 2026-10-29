@@ -3,6 +3,7 @@
 
   var STORAGE_LOCALE = "queryanalyzer.locale";
   var STORAGE_THEME = "queryanalyzer.theme";
+  var STORAGE_VIEW_MODE = "queryanalyzer.viewMode";
 
   function $(id) {
     return document.getElementById(id);
@@ -24,6 +25,15 @@
     }
   }
 
+  function loadStoredViewMode() {
+    try {
+      var v = localStorage.getItem(STORAGE_VIEW_MODE);
+      return v === "physical" ? "physical" : "includeCte";
+    } catch (e) {
+      return "includeCte";
+    }
+  }
+
   function saveLocale(locale) {
     try {
       localStorage.setItem(STORAGE_LOCALE, locale);
@@ -35,6 +45,14 @@
   function saveTheme(theme) {
     try {
       localStorage.setItem(STORAGE_THEME, theme);
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function saveViewMode(mode) {
+    try {
+      localStorage.setItem(STORAGE_VIEW_MODE, mode);
     } catch (e) {
       /* ignore */
     }
@@ -52,7 +70,7 @@
     }
   }
 
-  function formatRelationLine(edge, i18n) {
+  function formatRelationLine(edge) {
     var type = edge.joinType;
     var cond =
       edge.conditions && edge.conditions.length
@@ -65,19 +83,65 @@
     return edge.source + " → " + edge.target + " [" + type + "]: " + cond;
   }
 
+  function collectRelationLines(model, i18n) {
+    var lines = [];
+    var listedEdges = {};
+
+    model.nodes.forEach(function (node) {
+      var nodeEdges = model.edges.filter(function (e) {
+        return !listedEdges[e.id] && (e.source === node.id || e.target === node.id);
+      });
+
+      if (!nodeEdges.length) {
+        lines.push(node.label + " — " + i18n.t("noRelationshipFound"));
+        return;
+      }
+
+      nodeEdges.forEach(function (edge) {
+        listedEdges[edge.id] = true;
+        lines.push(formatRelationLine(edge));
+      });
+    });
+
+    model.edges.forEach(function (edge) {
+      if (listedEdges[edge.id]) return;
+      listedEdges[edge.id] = true;
+      lines.push(formatRelationLine(edge));
+    });
+
+    if (!lines.length) {
+      lines.push(i18n.t("noRelationshipFound"));
+    }
+
+    return lines;
+  }
+
   var app = {
     i18n: null,
     theme: "dark",
+    viewMode: "includeCte",
     lastModel: null,
 
     init: function () {
       this.i18n = global.QueryAnalyzer.I18n.create(loadStoredLocale());
       this.theme = loadStoredTheme();
+      this.viewMode = loadStoredViewMode();
       applyTheme(this.theme);
       this.i18n.applyToDocument();
       this.updateFooterPrivacy();
+      this.updateViewModeButtons();
       this.bindEvents();
+      this.updateGraphActions();
       this.updateLangButtons();
+    },
+
+    includeCtes: function () {
+      return this.viewMode !== "physical";
+    },
+
+    getDisplayModel: function () {
+      if (!this.lastModel) return null;
+      return global.QueryAnalyzer.ModelFilter.filter(this.lastModel, this.includeCtes());
     },
 
     updateFooterPrivacy: function () {
@@ -111,7 +175,75 @@
         self.theme = self.theme === "light" ? "dark" : "light";
         saveTheme(self.theme);
         applyTheme(self.theme);
-        if (self.lastModel) self.renderGraph(self.lastModel);
+        self.refreshDisplay();
+      });
+      $("view-include-cte").addEventListener("click", function () {
+        self.setViewMode("includeCte");
+      });
+      $("view-physical-only").addEventListener("click", function () {
+        self.setViewMode("physical");
+      });
+      $("btn-fullscreen").addEventListener("click", function () {
+        self.toggleFullscreen();
+      });
+      $("btn-export-pdf").addEventListener("click", function () {
+        self.exportPdf();
+      });
+      document.addEventListener("fullscreenchange", function () {
+        self.onFullscreenChange();
+      });
+    },
+
+    setViewMode: function (mode) {
+      this.viewMode = mode === "physical" ? "physical" : "includeCte";
+      saveViewMode(this.viewMode);
+      this.updateViewModeButtons();
+      this.refreshDisplay();
+    },
+
+    updateViewModeButtons: function () {
+      var includeCte = this.includeCtes();
+      $("view-include-cte").classList.toggle("is-active", includeCte);
+      $("view-physical-only").classList.toggle("is-active", !includeCte);
+    },
+
+    updateGraphActions: function () {
+      var hasGraph =
+        this.lastModel &&
+        this.lastModel.nodes.length &&
+        !$("graph-container").classList.contains("is-hidden");
+      $("btn-export-pdf").disabled = !hasGraph;
+      $("btn-fullscreen").disabled = !hasGraph;
+      this.updateFullscreenButtonLabel();
+    },
+
+    updateFullscreenButtonLabel: function () {
+      var btn = $("btn-fullscreen");
+      if (!btn) return;
+      var inFs = document.fullscreenElement === $("graph-stage");
+      btn.textContent = this.i18n.t(inFs ? "fullscreenOff" : "fullscreenOn");
+    },
+
+    onFullscreenChange: function () {
+      this.updateFullscreenButtonLabel();
+      global.requestAnimationFrame(function () {
+        global.QueryAnalyzer.GraphView.refreshLayout();
+      });
+    },
+
+    toggleFullscreen: function () {
+      var stage = $("graph-stage");
+      if (!stage || $("btn-fullscreen").disabled) return;
+
+      if (document.fullscreenElement === stage) {
+        document.exitFullscreen().catch(function () {
+          /* ignore */
+        });
+        return;
+      }
+
+      stage.requestFullscreen().catch(function () {
+        /* ignore */
       });
     },
 
@@ -121,12 +253,9 @@
       this.i18n.applyToDocument();
       this.updateFooterPrivacy();
       this.updateLangButtons();
+      this.updateViewModeButtons();
       applyTheme(this.theme);
-      if (this.lastModel) {
-        this.updateStats(this.lastModel);
-        this.renderGraph(this.lastModel);
-        this.renderRelationList(this.lastModel);
-      }
+      this.refreshDisplay();
     },
 
     updateLangButtons: function () {
@@ -139,6 +268,22 @@
       $("graph-empty").classList.add("is-hidden");
       $("graph-container").classList.remove("is-hidden");
       void $("graph-container").offsetWidth;
+    },
+
+    refreshDisplay: function () {
+      if (!this.lastModel || !this.lastModel.nodes.length) {
+        this.updateGraphActions();
+        return;
+      }
+      var model = this.getDisplayModel();
+      this.updateStats(model);
+      this.showGraphPanel();
+      var self = this;
+      global.requestAnimationFrame(function () {
+        self.renderGraph(model);
+        self.renderRelationList(model);
+        self.updateGraphActions();
+      });
     },
 
     analyze: function () {
@@ -163,19 +308,13 @@
       }
 
       this.lastModel = model;
-      this.updateStats(model);
 
       if (!model.nodes.length) {
         this.showNoRelations();
         return;
       }
 
-      this.showGraphPanel();
-      var self = this;
-      global.requestAnimationFrame(function () {
-        self.renderGraph(model);
-        self.renderRelationList(model);
-      });
+      this.refreshDisplay();
     },
 
     updateStats: function (model) {
@@ -194,50 +333,57 @@
 
     renderRelationList: function (model) {
       var list = $("relations-list");
-      var listedEdges = {};
       list.innerHTML = "";
 
-      model.nodes.forEach(function (node) {
-        var nodeEdges = model.edges.filter(function (e) {
-          return (
-            !listedEdges[e.id] && (e.source === node.id || e.target === node.id)
-          );
-        });
-
-        if (!nodeEdges.length) {
-          var isolated = document.createElement("li");
-          isolated.textContent =
-            node.label + " — " + app.i18n.t("noRelationshipFound");
-          list.appendChild(isolated);
-          return;
-        }
-
-        nodeEdges.forEach(function (edge) {
-          listedEdges[edge.id] = true;
-          var li = document.createElement("li");
-          li.textContent = formatRelationLine(edge, app.i18n);
-          list.appendChild(li);
-        });
-      });
-
-      model.edges.forEach(function (edge) {
-        if (listedEdges[edge.id]) return;
-        listedEdges[edge.id] = true;
+      collectRelationLines(model, this.i18n).forEach(function (line) {
         var li = document.createElement("li");
-        li.textContent = formatRelationLine(edge, app.i18n);
+        li.textContent = line;
         list.appendChild(li);
       });
-
-      if (!list.children.length) {
-        var empty = document.createElement("li");
-        empty.textContent = app.i18n.t("noRelationshipFound");
-        list.appendChild(empty);
-      }
 
       list.classList.remove("is-hidden");
     },
 
+    exportPdf: function () {
+      if ($("btn-export-pdf").disabled) {
+        window.alert(this.i18n.t("exportPdfNoData"));
+        return;
+      }
+
+      var display = this.getDisplayModel();
+      if (!display) return;
+
+      var png = global.QueryAnalyzer.GraphView.exportPng(this.theme === "light");
+      var viewModeLabel = this.includeCtes()
+        ? this.i18n.t("viewModeIncludeCte")
+        : this.i18n.t("viewModePhysicalOnly");
+
+      try {
+        global.QueryAnalyzer.PdfExport.exportDocumentationPdf({
+          title: this.i18n.t("pdfTitle"),
+          generatedLabel: this.i18n.t("pdfGenerated"),
+          generatedAt: global.QueryAnalyzer.PdfExport.formatGeneratedAt(this.i18n.getLocale()),
+          sqlLabel: this.i18n.t("pdfSqlSection"),
+          sql: $("sql-input").value.trim(),
+          graphLabel: this.i18n.t("pdfGraphSection"),
+          pngDataUrl: png,
+          relationsLabel: this.i18n.t("pdfRelationsSection"),
+          relationLines: collectRelationLines(display, this.i18n),
+          footerCredit: this.i18n.t("pdfFooter"),
+          viewModeLabel: viewModeLabel,
+        });
+      } catch (err) {
+        console.error("PDF export failed", err);
+        window.alert(this.i18n.t("exportPdfError"));
+      }
+    },
+
     showEmpty: function () {
+      if (document.fullscreenElement === $("graph-stage")) {
+        document.exitFullscreen().catch(function () {
+          /* ignore */
+        });
+      }
       global.QueryAnalyzer.GraphView.destroy();
       this.lastModel = null;
       $("stat-tables").textContent = "0";
@@ -247,15 +393,20 @@
       $("graph-empty-title").textContent = this.i18n.t("emptyTitle");
       $("graph-empty-desc").textContent = this.i18n.t("emptyDescription");
       $("relations-list").classList.add("is-hidden");
+      this.updateGraphActions();
     },
 
     showNoRelations: function () {
+      this.lastModel = null;
       global.QueryAnalyzer.GraphView.destroy();
+      $("stat-tables").textContent = "0";
+      $("stat-relations").textContent = "0";
       $("graph-container").classList.add("is-hidden");
       $("graph-empty").classList.remove("is-hidden");
       $("graph-empty-title").textContent = this.i18n.t("noRelationsFound");
       $("graph-empty-desc").textContent = "";
       $("relations-list").classList.add("is-hidden");
+      this.updateGraphActions();
     },
 
     clear: function () {

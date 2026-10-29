@@ -1,3 +1,40 @@
+.graph-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 0;
+}
+
+.graph-stage:fullscreen {
+  padding: 1rem;
+  background: var(--color-bg-elevated, var(--color-bg));
+  overflow: auto;
+}
+
+.graph-stage:fullscreen .graph-viewport {
+  flex: 1 1 auto;
+  min-height: min(70vh, 720px);
+}
+
+.graph-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.graph-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
 .graph-viewport {
   position: relative;
   flex: 1 1 auto;

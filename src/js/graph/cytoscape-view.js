@@ -287,10 +287,30 @@
     }
   }
 
+  function exportPng(isLight) {
+    if (!cyInstance) return null;
+    cyInstance.resize();
+    cyInstance.fit(undefined, 48);
+    return cyInstance.png({
+      output: "base64uri",
+      bg: isLight ? "#f1f5f9" : "#0f1419",
+      full: true,
+      scale: 2,
+    });
+  }
+
+  function refreshLayout() {
+    if (!cyInstance) return;
+    cyInstance.resize();
+    finalizeLayout(cyInstance);
+  }
+
   global.QueryAnalyzer = global.QueryAnalyzer || {};
   global.QueryAnalyzer.GraphView = {
     render: render,
     destroy: destroy,
+    exportPng: exportPng,
+    refreshLayout: refreshLayout,
     JOIN_COLORS: JOIN_COLORS,
   };
 })(typeof window !== "undefined" ? window : this);

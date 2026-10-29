@@ -26,19 +26,12 @@
     return map[joinType] || joinType;
   }
 
-  function formatConditions(conditions) {
-    if (!conditions || !conditions.length) return "";
-    return conditions
-      .map(function (c) {
-        if (c.using) return c.left;
-        return c.left + " = " + c.right;
-      })
-      .join(", ");
-  }
-
   function buildElements(model, i18n) {
+    var nodeIds = {};
     var elements = [];
+
     model.nodes.forEach(function (n) {
+      nodeIds[n.id] = true;
       elements.push({
         data: {
           id: n.id,
@@ -49,7 +42,7 @@
     });
 
     model.edges.forEach(function (e) {
-      var cond = formatConditions(e.conditions);
+      if (!nodeIds[e.source] || !nodeIds[e.target]) return;
       var shortLabel = joinLabel(e.joinType, i18n);
       elements.push({
         classes: "join-" + e.joinType.toLowerCase(),
@@ -59,7 +52,6 @@
           target: e.target,
           joinType: e.joinType,
           edgeLabel: shortLabel,
-          conditions: cond,
         },
       });
     });
@@ -73,23 +65,6 @@
     var text = isLight ? "#0f172a" : "#f8fafc";
     var edgeLabelBg = isLight ? "#ffffff" : "#0f172a";
     var edgeLabelBorder = isLight ? "#cbd5e1" : "#475569";
-
-    var edgeLabelBase = {
-      label: "data(edgeLabel)",
-      "font-size": 11,
-      "font-weight": 700,
-      "text-rotation": "autorotate",
-      "text-margin-y": -10,
-      color: text,
-      "text-background-color": edgeLabelBg,
-      "text-background-opacity": 1,
-      "text-background-padding": "5px",
-      "text-background-shape": "roundrectangle",
-      "text-border-color": edgeLabelBorder,
-      "text-border-width": 1,
-      "text-border-opacity": 1,
-      "text-wrap": "none",
-    };
 
     return [
       {
@@ -125,18 +100,28 @@
       },
       {
         selector: "edge",
-        style: Object.assign(
-          {
-            width: 3.5,
-            "curve-style": "bezier",
-            "target-arrow-shape": "triangle",
-            "arrow-scale": 1.2,
-            "line-color": "#94a3b8",
-            "target-arrow-color": "#94a3b8",
-            opacity: 0.95,
-          },
-          edgeLabelBase
-        ),
+        style: {
+          width: 3.5,
+          "curve-style": "bezier",
+          "target-arrow-shape": "triangle",
+          "arrow-scale": 1.2,
+          "line-color": "#94a3b8",
+          "target-arrow-color": "#94a3b8",
+          opacity: 0.95,
+          label: "data(edgeLabel)",
+          "font-size": 11,
+          "font-weight": 700,
+          "text-rotation": "autorotate",
+          "text-margin-y": -10,
+          color: text,
+          "text-background-color": edgeLabelBg,
+          "text-background-opacity": 1,
+          "text-background-padding": "5px",
+          "text-background-shape": "roundrectangle",
+          "text-border-color": edgeLabelBorder,
+          "text-border-width": 1,
+          "text-border-opacity": 1,
+        },
       },
       {
         selector: "edge:selected",
@@ -232,6 +217,36 @@
     });
   }
 
+  function finalizeLayout(cy) {
+    alignIsolatedNodesRight(cy);
+    cy.resize();
+    cy.fit(undefined, 48);
+  }
+
+  function runLayout(cy) {
+    var layout = cy.layout({
+      name: "cose",
+      animate: false,
+      fit: false,
+      padding: 48,
+      nodeRepulsion: 8000,
+      idealEdgeLength: 100,
+      edgeElasticity: 100,
+      numIter: 500,
+    });
+
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      finalizeLayout(cy);
+    }
+
+    layout.one("layoutstop", finish);
+    layout.run();
+    global.setTimeout(finish, 800);
+  }
+
   function render(container, model, i18n, isLight) {
     if (!global.cytoscape) {
       console.error("Cytoscape.js not loaded");
@@ -244,32 +259,23 @@
     }
 
     var elements = buildElements(model, i18n);
+    if (!elements.length) {
+      return null;
+    }
+
     cyInstance = global.cytoscape({
       container: container,
       elements: elements,
       style: getStylesheet(isLight),
-      layout: {
-        name: "cose",
-        animate: true,
-        animationDuration: 400,
-        nodeRepulsion: 9000,
-        idealEdgeLength: 140,
-        edgeElasticity: 100,
-        padding: 40,
-        componentSpacing: 120,
-      },
       wheelSensitivity: 0.2,
-    });
-
-    cyInstance.one("layoutstop", function () {
-      alignIsolatedNodesRight(cyInstance);
-      cyInstance.fit(undefined, 48);
     });
 
     cyInstance.on("tap", "edge", function (evt) {
       cyInstance.$("edge:selected").unselect();
       evt.target.select();
     });
+
+    runLayout(cyInstance);
 
     return cyInstance;
   }

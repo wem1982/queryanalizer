@@ -102,14 +102,21 @@
               >
             </div>
             <p class="graph-hint" data-i18n="graphHint">Drag nodes, scroll to zoom.</p>
-            <div id="graph-empty" class="empty-state">
-              <div class="empty-state-icon" aria-hidden="true">◇</div>
-              <strong id="graph-empty-title" data-i18n="emptyTitle">No analysis yet</strong>
-              <p id="graph-empty-desc" data-i18n="emptyDescription">
-                Enter a SQL query and click Analyze.
-              </p>
+            <div class="graph-viewport">
+              <div id="graph-empty" class="empty-state graph-viewport-layer">
+                <div class="empty-state-icon" aria-hidden="true">◇</div>
+                <strong id="graph-empty-title" data-i18n="emptyTitle">No analysis yet</strong>
+                <p id="graph-empty-desc" data-i18n="emptyDescription">
+                  Enter a SQL query and click Analyze.
+                </p>
+              </div>
+              <div
+                id="graph-container"
+                class="graph-viewport-layer is-hidden"
+                role="img"
+                aria-label="Relationship graph"
+              ></div>
             </div>
-            <div id="graph-container" class="is-hidden" role="img" aria-label="Relationship graph"></div>
             <ol
               id="relations-list"
               class="relations-list is-hidden"

@@ -135,6 +135,12 @@
       $("lang-pt").classList.toggle("is-active", loc === "pt");
     },
 
+    showGraphPanel: function () {
+      $("graph-empty").classList.add("is-hidden");
+      $("graph-container").classList.remove("is-hidden");
+      void $("graph-container").offsetWidth;
+    },
+
     analyze: function () {
       var sql = $("sql-input").value.trim();
       if (!sql) {
@@ -147,7 +153,15 @@
         cte: this.i18n.t("cteLabel"),
       };
 
-      var model = global.QueryAnalyzer.RelationshipExtractor.extractRelationships(sql, labels);
+      var model;
+      try {
+        model = global.QueryAnalyzer.RelationshipExtractor.extractRelationships(sql, labels);
+      } catch (err) {
+        console.error("Relationship extraction failed", err);
+        this.showNoRelations();
+        return;
+      }
+
       this.lastModel = model;
       this.updateStats(model);
 
@@ -156,10 +170,12 @@
         return;
       }
 
-      $("graph-empty").classList.add("is-hidden");
-      $("graph-container").classList.remove("is-hidden");
-      this.renderGraph(model);
-      this.renderRelationList(model);
+      this.showGraphPanel();
+      var self = this;
+      global.requestAnimationFrame(function () {
+        self.renderGraph(model);
+        self.renderRelationList(model);
+      });
     },
 
     updateStats: function (model) {
@@ -248,8 +264,12 @@
     },
 
     loadDemo: function () {
-      if (!global.QueryAnalyzer.DemoQuery) return;
-      $("sql-input").value = global.QueryAnalyzer.DemoQuery.get();
+      var query =
+        global.QueryAnalyzer.DemoQuery && global.QueryAnalyzer.DemoQuery.get
+          ? global.QueryAnalyzer.DemoQuery.get()
+          : null;
+      if (!query) return;
+      $("sql-input").value = query;
       this.analyze();
     },
   };

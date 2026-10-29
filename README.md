@@ -1,6 +1,6 @@
 # QueryAnalyzer
 
-**Live demo:** [https://wem1982.github.io/queryanalizer/](https://wem1982.github.io/queryanalizer/) — ative o Pages uma vez conforme [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md).
+**Live demo:** [https://willmarkz.github.io/queryanalizer/](https://willmarkz.github.io/queryanalizer/) — ative o Pages uma vez conforme [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md).
 
 QueryAnalyzer is a **zero-install**, browser-only tool that turns a SQL query into an **interactive relationship graph**. Paste one query, explore tables and joins visually, and switch the interface between **English** and **Portuguese**.
 
@@ -82,8 +82,8 @@ QueryAnalyzer/
 
 ## License
 
-[MIT](LICENSE) — free to use, copy, modify, and distribute. You must **always credit the author** William Marques ([github.com/wem1982](https://github.com/wem1982)) and include the license notice in copies or derivatives.
+[MIT](LICENSE) — free to use, copy, modify, and distribute. You must **always credit the author** William Marques ([github.com/willmarkz](https://github.com/willmarkz)) and include the license notice in copies or derivatives.
 
 ## Author
 
-**William Marques** — [github.com/wem1982](https://github.com/wem1982) · [queryanalizer](https://github.com/wem1982/queryanalizer)
+**William Marques** — [github.com/willmarkz](https://github.com/willmarkz) · [queryanalizer](https://github.com/willmarkz/queryanalizer)

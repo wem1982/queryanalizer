@@ -4,12 +4,12 @@ O repositório inclui um workflow que, a cada push na `main`, publica o site na 
 
 ## Ativação única (obrigatória)
 
-1. Abra **[Settings → Pages](https://github.com/wem1982/queryanalizer/settings/pages)** do repositório (é preciso estar logado como `wem1982`).
+1. Abra **[Settings → Pages](https://github.com/willmarkz/queryanalizer/settings/pages)** do repositório (é preciso estar logado como `willmarkz`).
 2. Em **Build and deployment → Source**, escolha **Deploy from a branch**.
 3. Em **Branch**, selecione **`gh-pages`** e pasta **`/ (root)`**, depois **Save**.
 4. Aguarde 1–3 minutos. O site ficará em:
 
-   **https://wem1982.github.io/queryanalizer/**
+   **https://willmarkz.github.io/queryanalizer/**
 
 Se o workflow **Deploy GitHub Pages** ainda não tiver rodado, vá em **Actions** → **Deploy GitHub Pages** → **Run workflow**.
 

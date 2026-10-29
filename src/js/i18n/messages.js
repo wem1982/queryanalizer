@@ -26,7 +26,7 @@
       footerPrefix: "QueryAnalyzer by",
       footerSuffix: "MIT — free use with attribution.",
       footerPrivacy:
-        "On https://wem1982.github.io/queryanalizer/, your SQL stays in the browser and is not saved on any server.",
+        "On https://willmarkz.github.io/queryanalizer/, your SQL stays in the browser and is not saved on any server.",
       noRelationshipFound: "NO RELATIONSHIP FOUND",
       joinInner: "INNER",
       joinLeft: "LEFT",
@@ -57,7 +57,7 @@
       pdfSqlSection: "SQL query",
       pdfGraphSection: "Relationship graph",
       pdfRelationsSection: "Detected links",
-      pdfFooter: "QueryAnalyzer by William Marques — https://github.com/wem1982/queryanalizer",
+      pdfFooter: "QueryAnalyzer by William Marques — https://github.com/willmarkz/queryanalizer",
     },
     pt: {
       appName: "QueryAnalyzer",
@@ -83,7 +83,7 @@
       footerPrefix: "QueryAnalyzer por",
       footerSuffix: "MIT — uso livre com atribuição ao autor.",
       footerPrivacy:
-        "Em https://wem1982.github.io/queryanalizer/, sua SQL é processada no navegador e não é salva em nenhum servidor.",
+        "Em https://willmarkz.github.io/queryanalizer/, sua SQL é processada no navegador e não é salva em nenhum servidor.",
       noRelationshipFound: "NO RELATIONSHIP FOUND",
       joinInner: "INNER",
       joinLeft: "LEFT",
@@ -114,7 +114,7 @@
       pdfSqlSection: "Consulta SQL",
       pdfGraphSection: "Grafo de relações",
       pdfRelationsSection: "Vínculos detectados",
-      pdfFooter: "QueryAnalyzer by William Marques — https://github.com/wem1982/queryanalizer",
+      pdfFooter: "QueryAnalyzer by William Marques — https://github.com/willmarkz/queryanalizer",
     },
   };
 

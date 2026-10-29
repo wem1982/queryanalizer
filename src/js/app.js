@@ -149,7 +149,7 @@
       if (!el) return;
       var onPages =
         typeof location !== "undefined" &&
-        location.hostname === "wem1982.github.io" &&
+        location.hostname === "willmarkz.github.io" &&
         location.pathname.indexOf("/queryanalizer") === 0;
       el.classList.toggle("is-hidden", !onPages);
     },

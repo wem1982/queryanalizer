@@ -4,7 +4,7 @@ Thank you for your interest in QueryAnalyzer.
 
 ## Principles
 
-- QueryAnalyzer is MIT-licensed; forks and contributions must **keep author credit** to William Marques ([github.com/wem1982](https://github.com/wem1982)) as stated in [LICENSE](LICENSE).
+- QueryAnalyzer is MIT-licensed; forks and contributions must **keep author credit** to William Marques ([github.com/willmarkz](https://github.com/willmarkz)) as stated in [LICENSE](LICENSE).
 - Keep the app **install-free** — no mandatory build tooling for end users.
 - Preserve **single-query** analysis and **relationship-only** scope (no SQL error diagnostics).
 - Match existing code style: vanilla JS IIFEs, `QueryAnalyzer` namespace, CSS variables for theming.

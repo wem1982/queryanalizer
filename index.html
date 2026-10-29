@@ -3,20 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QueryAnalyzer — SQL Join &amp; Relationship Graph Visualizer | Will Markz</title>
     <meta
       name="description"
-      content="QueryAnalyzer — interactive SQL relationship graph in the browser. No install required."
+      content="Paste complex SQL and instantly visualize table joins, CTEs, and relationships in an interactive graph. Free browser tool by Will Markz — private, no install, export PDF."
     />
-    <title>QueryAnalyzer by William Marques</title>
+    <meta
+      name="keywords"
+      content="SQL analyzer, SQL join visualizer, relationship graph, query analyzer, CTE, database schema, Will Markz, QueryAnalyzer"
+    />
+    <meta name="author" content="Will Markz" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="canonical" href="https://willmarkz.github.io/queryanalizer/" />
+    <link rel="alternate" hreflang="en" href="https://willmarkz.github.io/queryanalizer/" />
+    <link rel="alternate" hreflang="pt-BR" href="https://willmarkz.github.io/queryanalizer/" />
+    <link rel="alternate" hreflang="x-default" href="https://willmarkz.github.io/queryanalizer/" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/favicon.svg" />
+    <link rel="manifest" href="site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="QueryAnalyzer" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="pt_BR" />
+    <meta property="og:url" content="https://willmarkz.github.io/queryanalizer/" />
+    <meta
+      property="og:title"
+      content="QueryAnalyzer — SQL Join &amp; Relationship Graph Visualizer | Will Markz"
+    />
+    <meta
+      property="og:description"
+      content="Paste complex SQL and instantly visualize table joins, CTEs, and relationships in an interactive graph. Free browser tool — private, no install."
+    />
+    <meta property="og:image" content="https://willmarkz.github.io/queryanalizer/assets/og-cover.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="QueryAnalyzer SQL relationship graph tool by Will Markz" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="QueryAnalyzer — SQL Join &amp; Relationship Graph Visualizer" />
+    <meta
+      name="twitter:description"
+      content="Visualize SQL joins and table relationships in seconds. Runs in your browser with full privacy."
+    />
+    <meta name="twitter:image" content="https://willmarkz.github.io/queryanalizer/assets/og-cover.svg" />
+    <meta name="twitter:creator" content="@willmarkz" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://willmarkz.github.io/queryanalizer/#website",
+            "url": "https://willmarkz.github.io/queryanalizer/",
+            "name": "QueryAnalyzer",
+            "description": "Interactive SQL relationship and join graph visualizer in the browser.",
+            "inLanguage": ["en", "pt-BR"],
+            "publisher": { "@id": "https://willmarkz.github.io/queryanalizer/#person" }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://willmarkz.github.io/queryanalizer/#app",
+            "name": "QueryAnalyzer",
+            "url": "https://willmarkz.github.io/queryanalizer/",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+            "author": { "@id": "https://willmarkz.github.io/queryanalizer/#person" },
+            "description": "Paste SQL queries to extract joins and render an interactive relationship graph. Includes CTE view, PDF export, and fullscreen graph.",
+            "featureList": [
+              "SQL join and relationship extraction",
+              "Interactive Cytoscape graph",
+              "CTE and physical-table view modes",
+              "PDF documentation export",
+              "English and Portuguese UI"
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://willmarkz.github.io/queryanalizer/#person",
+            "name": "Will Markz",
+            "url": "https://github.com/willmarkz",
+            "sameAs": ["https://github.com/willmarkz"]
+          }
+        ]
+      }
+    </script>
     <link rel="stylesheet" href="src/css/main.css" />
     <link rel="stylesheet" href="src/css/graph.css" />
+    <link rel="stylesheet" href="src/css/features.css" />
   </head>
   <body>
     <header class="app-header">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">SQL</div>
         <div>
-          <h1 data-i18n="appTitle">QueryAnalyzer by William Marques</h1>
+          <h1 data-i18n="appTitle">QueryAnalyzer by Will Markz</h1>
           <p class="brand-tagline" data-i18n="tagline">SQL relationship visualization</p>
         </div>
       </div>
@@ -31,7 +114,21 @@
       </div>
     </header>
 
-    <main class="app-main">
+    <div
+      id="welcome-banner"
+      class="welcome-banner is-hidden"
+      role="region"
+      aria-labelledby="welcome-banner-text"
+    >
+      <div class="welcome-banner__inner">
+        <p id="welcome-banner-text" class="welcome-banner__text" data-i18n="welcomeMessage"></p>
+        <button type="button" id="welcome-dismiss" class="welcome-banner__close" data-i18n="welcomeDismiss">
+          Got it
+        </button>
+      </div>
+    </div>
+
+    <main class="app-main" id="main-content">
       <section class="hero">
         <h2 data-i18n="heroTitle">Map table relationships in your SQL</h2>
         <p data-i18n="heroDescription">
@@ -142,19 +239,19 @@
               </div>
               <p class="graph-hint" data-i18n="graphHint">Drag nodes, scroll to zoom.</p>
               <div class="graph-viewport">
-              <div id="graph-empty" class="empty-state graph-viewport-layer">
-                <div class="empty-state-icon" aria-hidden="true">◇</div>
-                <strong id="graph-empty-title" data-i18n="emptyTitle">No analysis yet</strong>
-                <p id="graph-empty-desc" data-i18n="emptyDescription">
-                  Enter a SQL query and click Analyze.
-                </p>
-              </div>
-              <div
-                id="graph-container"
-                class="graph-viewport-layer is-hidden"
-                role="img"
-                aria-label="Relationship graph"
-              ></div>
+                <div id="graph-empty" class="empty-state graph-viewport-layer">
+                  <div class="empty-state-icon" aria-hidden="true">◇</div>
+                  <strong id="graph-empty-title" data-i18n="emptyTitle">No analysis yet</strong>
+                  <p id="graph-empty-desc" data-i18n="emptyDescription">
+                    Enter a SQL query and click Analyze.
+                  </p>
+                </div>
+                <div
+                  id="graph-container"
+                  class="graph-viewport-layer is-hidden"
+                  role="img"
+                  aria-label="Relationship graph"
+                ></div>
               </div>
             </div>
             <ol
@@ -174,11 +271,30 @@
     <footer class="app-footer">
       <p>
         <span data-i18n="footerPrefix">QueryAnalyzer by</span>
-        <a href="https://github.com/willmarkz" target="_blank" rel="noopener noreferrer">William Marques</a>.
+        <a href="https://github.com/willmarkz" target="_blank" rel="noopener noreferrer author" data-i18n="authorName"
+          >Will Markz</a
+        >.
         <span data-i18n="footerSuffix">MIT — free use with attribution.</span>
       </p>
       <p id="footer-privacy" class="footer-privacy is-hidden" data-i18n="footerPrivacy"></p>
     </footer>
+
+    <div class="share-widget" id="share-widget">
+      <div id="share-menu" class="share-widget__menu is-hidden" role="dialog" aria-labelledby="share-menu-title">
+        <p id="share-menu-title" class="share-widget__title">Share QueryAnalyzer</p>
+        <ul id="share-menu-list" class="share-widget__list"></ul>
+      </div>
+      <button
+        type="button"
+        id="share-fab"
+        class="share-fab"
+        aria-expanded="false"
+        aria-controls="share-menu"
+      >
+        <span class="share-fab__icon" aria-hidden="true">↗</span>
+        <span id="share-fab-label">Share</span>
+      </button>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
@@ -189,6 +305,7 @@
     <script src="src/js/graph/cytoscape-view.js"></script>
     <script src="src/js/export/pdf-export.js"></script>
     <script src="src/js/data/demo-query.js"></script>
+    <script src="src/js/ui/welcome-share.js"></script>
     <script src="src/js/app.js"></script>
     <script src="src/js/main.js"></script>
   </body>

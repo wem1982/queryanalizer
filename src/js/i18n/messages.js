@@ -4,7 +4,26 @@
   var MESSAGES = {
     en: {
       appName: "QueryAnalyzer",
-      appTitle: "QueryAnalyzer by William Marques",
+      appTitle: "QueryAnalyzer by Will Markz",
+      authorName: "Will Markz",
+      seoTitle: "QueryAnalyzer — SQL Join & Relationship Graph Visualizer | Will Markz",
+      seoDescription:
+        "Paste complex SQL and instantly visualize table joins, CTEs, and relationships in an interactive graph. Free browser tool by Will Markz — private, no install, export PDF.",
+      welcomeMessage:
+        "Know that super complex query that takes a long time to understand? Paste it in this text box and watch the magic happen! In a few seconds you will see the relationships and understand the details.",
+      welcomeDismiss: "Got it",
+      shareButton: "Share",
+      shareMenuTitle: "Share QueryAnalyzer",
+      shareMessage:
+        "QueryAnalyzer — visualize SQL joins and relationships in seconds. Try it free in your browser:",
+      shareFacebook: "Facebook",
+      shareTwitter: "X (Twitter)",
+      shareLinkedIn: "LinkedIn",
+      shareWhatsApp: "WhatsApp",
+      shareTelegram: "Telegram",
+      shareReddit: "Reddit",
+      shareCopyLink: "Copy link",
+      shareCopied: "Link copied!",
       tagline: "SQL relationship visualization",
       heroTitle: "Map table relationships in your SQL",
       heroDescription:
@@ -57,11 +76,30 @@
       pdfSqlSection: "SQL query",
       pdfGraphSection: "Relationship graph",
       pdfRelationsSection: "Detected links",
-      pdfFooter: "QueryAnalyzer by William Marques — https://github.com/willmarkz/queryanalizer",
+      pdfFooter: "QueryAnalyzer by Will Markz — https://github.com/willmarkz/queryanalizer",
     },
     pt: {
       appName: "QueryAnalyzer",
-      appTitle: "QueryAnalyzer by William Marques",
+      appTitle: "QueryAnalyzer by Will Markz",
+      authorName: "Will Markz",
+      seoTitle: "QueryAnalyzer — Visualizador de joins e relações SQL | Will Markz",
+      seoDescription:
+        "Cole SQL complexa e visualize joins, CTEs e relações entre tabelas em um grafo interativo. Ferramenta gratuita no navegador por Will Markz — privada, sem instalação, exporte PDF.",
+      welcomeMessage:
+        "Sabe aquela query super complexa que precisa de um bom tempo para ser compreendida? Coloque ela aqui nessa caixa de texto e veja a mágica acontecer! Em poucos segundos você poderá ver as relações existentes e compreender os detalhes.",
+      welcomeDismiss: "Entendi",
+      shareButton: "Compartilhe",
+      shareMenuTitle: "Compartilhar QueryAnalyzer",
+      shareMessage:
+        "QueryAnalyzer — visualize joins e relações SQL em segundos. Teste grátis no navegador:",
+      shareFacebook: "Facebook",
+      shareTwitter: "X (Twitter)",
+      shareLinkedIn: "LinkedIn",
+      shareWhatsApp: "WhatsApp",
+      shareTelegram: "Telegram",
+      shareReddit: "Reddit",
+      shareCopyLink: "Copiar link",
+      shareCopied: "Link copiado!",
       tagline: "Visualização de relações SQL",
       heroTitle: "Mapeie relações entre tabelas na sua SQL",
       heroDescription:
@@ -114,7 +152,7 @@
       pdfSqlSection: "Consulta SQL",
       pdfGraphSection: "Grafo de relações",
       pdfRelationsSection: "Vínculos detectados",
-      pdfFooter: "QueryAnalyzer by William Marques — https://github.com/willmarkz/queryanalizer",
+      pdfFooter: "QueryAnalyzer by Will Markz — https://github.com/willmarkz/queryanalizer",
     },
   };
 
@@ -145,6 +183,18 @@
           }
         });
         document.documentElement.lang = locale === "pt" ? "pt-BR" : "en";
+
+        if (pack.seoTitle) document.title = pack.seoTitle;
+        var metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc && pack.seoDescription) metaDesc.setAttribute("content", pack.seoDescription);
+        var ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle && pack.seoTitle) ogTitle.setAttribute("content", pack.seoTitle);
+        var ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc && pack.seoDescription) ogDesc.setAttribute("content", pack.seoDescription);
+        var twTitle = document.querySelector('meta[name="twitter:title"]');
+        if (twTitle && pack.seoTitle) twTitle.setAttribute("content", pack.seoTitle);
+        var twDesc = document.querySelector('meta[name="twitter:description"]');
+        if (twDesc && pack.seoDescription) twDesc.setAttribute("content", pack.seoDescription);
       },
     };
   }

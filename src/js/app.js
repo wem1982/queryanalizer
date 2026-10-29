@@ -133,6 +133,9 @@
       this.bindEvents();
       this.updateGraphActions();
       this.updateLangButtons();
+      if (global.QueryAnalyzer.WelcomeShare) {
+        global.QueryAnalyzer.WelcomeShare.init(this.i18n);
+      }
     },
 
     includeCtes: function () {
@@ -256,6 +259,9 @@
       this.updateViewModeButtons();
       applyTheme(this.theme);
       this.refreshDisplay();
+      if (global.QueryAnalyzer.WelcomeShare) {
+        global.QueryAnalyzer.WelcomeShare.refreshLabels(this.i18n);
+      }
     },
 
     updateLangButtons: function () {

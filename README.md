@@ -82,8 +82,8 @@ QueryAnalyzer/
 
 ## License
 
-[MIT](LICENSE) — free to use, copy, modify, and distribute. You must **always credit the author** William Marques ([github.com/willmarkz](https://github.com/willmarkz)) and include the license notice in copies or derivatives.
+[MIT](LICENSE) — free to use, copy, modify, and distribute. You must **always credit the author** Will Markz ([github.com/willmarkz](https://github.com/willmarkz)) and include the license notice in copies or derivatives.
 
 ## Author
 
-**William Marques** — [github.com/willmarkz](https://github.com/willmarkz) · [queryanalizer](https://github.com/willmarkz/queryanalizer)
+**Will Markz** — [github.com/willmarkz](https://github.com/willmarkz) · [queryanalizer](https://github.com/willmarkz/queryanalizer)

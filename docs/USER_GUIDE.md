@@ -54,4 +54,4 @@ All processing happens in your browser. Queries are not sent to any server unles
 
 ## Credits & license
 
-QueryAnalyzer by **William Marques** ([github.com/willmarkz](https://github.com/willmarkz)). MIT license: free use and copying with **mandatory attribution** to the author. See [LICENSE](../LICENSE).
+QueryAnalyzer by **Will Markz** ([github.com/willmarkz](https://github.com/willmarkz)). MIT license: free use and copying with **mandatory attribution** to the author. See [LICENSE](../LICENSE).

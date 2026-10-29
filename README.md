@@ -22,7 +22,7 @@ QueryAnalyzer is a **zero-install**, browser-only tool that turns a SQL query in
 
 1. Clone or download this repository.
 2. Open **`index.html`** in a modern browser (Chrome, Edge, Firefox, Safari).
-3. Paste a SQL query and click **Analyze relationships** / **Analisar relações**.
+3. Paste a SQL query and click **Analyze relationships** / **Analisar relações**, or use **View example** / **Ver exemplo** for a fictional complex demo query.
 
 **Network:** the graph library loads from jsDelivr CDN. An internet connection is required for that script; all application logic runs locally in the browser.
 

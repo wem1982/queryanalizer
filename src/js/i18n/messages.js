@@ -14,6 +14,7 @@
       placeholderSql:
         "SELECT o.id, c.name\nFROM orders o\nINNER JOIN customers c ON c.id = o.customer_id\nWHERE o.status = 'open';",
       analyze: "Analyze relationships",
+      viewExample: "View example",
       clear: "Clear",
       tables: "Tables",
       relations: "Relations",
@@ -53,6 +54,7 @@
       placeholderSql:
         "SELECT p.id, c.nome\nFROM pedidos p\nINNER JOIN clientes c ON c.id = p.cliente_id\nWHERE p.status = 'aberto';",
       analyze: "Analisar relações",
+      viewExample: "Ver exemplo",
       clear: "Limpar",
       tables: "Tabelas",
       relations: "Relações",

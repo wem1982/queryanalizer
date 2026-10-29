@@ -98,6 +98,9 @@
       $("btn-clear").addEventListener("click", function () {
         self.clear();
       });
+      $("btn-example").addEventListener("click", function () {
+        self.loadDemo();
+      });
       $("lang-en").addEventListener("click", function () {
         self.setLocale("en");
       });
@@ -242,6 +245,12 @@
     clear: function () {
       $("sql-input").value = "";
       this.showEmpty();
+    },
+
+    loadDemo: function () {
+      if (!global.QueryAnalyzer.DemoQuery) return;
+      $("sql-input").value = global.QueryAnalyzer.DemoQuery.get();
+      this.analyze();
     },
   };
 

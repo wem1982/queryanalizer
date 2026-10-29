@@ -40,9 +40,8 @@
     "  FROM demo_hr.employee_territories et\n" +
     "  INNER JOIN demo_hr.territories t ON t.territory_id = et.territory_id\n" +
     ") terr ON terr.territory_id = cust.territory_id\n" +
-    ", demo_legacy.accounts legacy\n" +
+    "INNER JOIN demo_legacy.accounts legacy ON legacy.account_id = cust.legacy_account_id\n" +
     "WHERE cust.status = 'active'\n" +
-    "  AND legacy.account_id = cust.legacy_account_id\n" +
     "  AND inv.amount > 0;";
 
   global.QueryAnalyzer = global.QueryAnalyzer || {};

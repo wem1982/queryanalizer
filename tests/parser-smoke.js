@@ -51,6 +51,15 @@ assert("cte node", function () {
   if (!r.nodes.some(function (n) { return n.id === "x"; })) throw new Error("missing CTE node x");
 });
 
+assert("with clause line breaks", function () {
+  var r = extract(
+    "WITH\n  x AS (\n    SELECT * FROM a INNER JOIN b ON b.id = a.id\n  )\nSELECT * FROM x",
+    { subquery: "Sub", cte: "CTE" }
+  );
+  if (!r.nodes.some(function (n) { return n.id === "x"; })) throw new Error("missing CTE x");
+  if (r.edges.length < 1) throw new Error("expected join in CTE body");
+});
+
 assert("joins inside cte body", function () {
   var r = extract(
     "WITH base AS (\n" +

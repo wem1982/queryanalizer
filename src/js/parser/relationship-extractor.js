@@ -223,9 +223,10 @@
     if (!m) return { sql: sql, ctes: ctes };
 
     var i = m[0].length;
-    var body = sql.slice(i);
+    var body = sql.slice(i).trim();
 
     while (body.length) {
+      body = body.trim();
       var nameMatch = body.match(/^([\w]+)\s+AS\s*\(/i);
       if (!nameMatch) break;
       var name = nameMatch[1];
